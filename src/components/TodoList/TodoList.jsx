@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import AddTodo from './AddTodo/AddTodo';
+import AddTodo from '../AddTodo/AddTodo';
 import Todo from '../Todo/Todo';
+import styles from './TodoList.module.css';
 
-export default function TodoList() {
+export default function TodoList({ filter }) {
   const [todos, setTodos] = useState([
     { id: 1, text: '장보기', status: 'active' },
     { id: 2, text: '공부하기', status: 'active' },
@@ -21,14 +22,22 @@ export default function TodoList() {
     setTodos(todos.filter((item) => item.id !== id));
   };
 
+  const filtered = getFilteredItems(todos, filter);
   return (
-    <section>
-      <ul>
-        {todos.map((item) => (
+    <section className={styles.container}>
+      <ul className={styles.list}>
+        {filtered.map((item) => (
           <Todo key={item.id} todo={item} onUpdate={handleUpdate} onDelete={handleDelete} />
         ))}
       </ul>
       <AddTodo prevId={parseInt(todos.length - 1)} onAdd={handleAdd} />
     </section>
   );
+}
+
+function getFilteredItems(todos, filter) {
+  if (filter === 'all') {
+    return todos;
+  }
+  return todos.filter((item) => item.status === filter);
 }
